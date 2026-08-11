@@ -1,0 +1,13 @@
+# Ignora as pastas pesadas criadas pelo PyInstaller
+/build
+/dist
+/*.spec
+
+# Ignora caches do Python
+__pycache__/
+*.pyc
+
+# Ignora pastas de ambiente virtual (se houver)
+.venv/
+venv/
+env/
