@@ -10,9 +10,6 @@ from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD, DND_FILES
 from markitdown import MarkItDown
 
-# =========================================================================
-# 🛡️ BLINDAGEM ANTI-CRASH
-# =========================================================================
 if sys.stdout is None:
     sys.stdout = open(os.devnull, 'w')
 if sys.stderr is None:
@@ -29,9 +26,7 @@ class AppDnD(ctk.CTk, TkinterDnD.DnDWrapper):
         super().__init__(*args, **kwargs)
         self.TkdndVersion = TkinterDnD._require(self)
 
-# =========================================================================
-# MÓDULO 1: JANELA DE PRÉ-VISUALIZAÇÃO (Clean Design)
-# =========================================================================
+
 class PreviewWindow(ctk.CTkToplevel):
     def __init__(self, master, resultados_sucesso):
         super().__init__(master)
@@ -107,9 +102,7 @@ class PreviewWindow(ctk.CTkToplevel):
             except Exception as e:
                 messagebox.showerror("Erro", f"Falha no salvamento:\n{e}")
 
-# =========================================================================
-# MÓDULO 2: APLICATIVO PRINCIPAL (CLEAN + RGB + MENU ANIMADO)
-# =========================================================================
+
 class MarkItDownProApp(AppDnD):
     def __init__(self):
         super().__init__()
@@ -122,9 +115,9 @@ class MarkItDownProApp(AppDnD):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        # Variáveis de Controle
+      
         self.menu_aberto = True
-        self.largura_sidebar = 260 # Controle matemático da largura
+        self.largura_sidebar = 260 
         
         self.arquivos_fila = []
         self.widgets_arquivos = [] 
@@ -140,11 +133,9 @@ class MarkItDownProApp(AppDnD):
         self._iniciar_animacao_rgb()
 
     def _montar_interface(self):
-        # ==========================================
-        # SIDEBAR RETRÁTIL (Agora suporta animação)
-        # ==========================================
+
         self.sidebar_frame = ctk.CTkFrame(self, width=self.largura_sidebar, corner_radius=0, fg_color="#FFFFFF", border_width=1, border_color="#E0E0E0")
-        self.sidebar_frame.grid_propagate(False) # ISSO É O SEGREDO: Força a barra a aceitar redimensionamento animado
+        self.sidebar_frame.grid_propagate(False) 
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(5, weight=1)
 
@@ -186,7 +177,7 @@ class MarkItDownProApp(AppDnD):
         self.scroll_lista = ctk.CTkScrollableFrame(self.main_area, corner_radius=12, fg_color="#FFFFFF", border_width=1, border_color="#E5E7E9")
         self.scroll_lista.grid(row=2, column=0, sticky="nsew", pady=(0, 20))
 
-        # BOTÃO ANIMADO RGB
+     
         self.borda_rgb_botao = ctk.CTkFrame(self.main_area, corner_radius=10)
         self.borda_rgb_botao.grid(row=3, column=0, sticky="ew", pady=(0, 15))
         
@@ -208,46 +199,41 @@ class MarkItDownProApp(AppDnD):
         self.terminal.grid(row=5, column=0, sticky="ew")
         self.terminal.configure(state="disabled")
 
-    # =========================================================================
-    # 🌟 MOTOR DE ANIMAÇÃO DO MENU (DESLIZE SUAVE)
-    # =========================================================================
+
     def _alternar_menu(self):
         """Gatilho que decide se o menu vai abrir ou fechar."""
         if self.menu_aberto:
             self._animar_sidebar(largura_alvo=0)
             self.menu_aberto = False
         else:
-            self.sidebar_frame.grid(row=0, column=0, sticky="nsew") # Mostra o frame
+            self.sidebar_frame.grid(row=0, column=0, sticky="nsew") 
             self._animar_sidebar(largura_alvo=260)
             self.menu_aberto = True
 
     def _animar_sidebar(self, largura_alvo):
         """Redimensiona o menu pixel por pixel criando um efeito visual de deslize."""
-        passo_animacao = 25 # Velocidade do deslize (Pixels por frame)
-
+        passo_animacao = 25 
         if self.largura_sidebar < largura_alvo:
-            # Expandindo...
+            
             self.largura_sidebar = min(self.largura_sidebar + passo_animacao, largura_alvo)
             self.sidebar_frame.configure(width=self.largura_sidebar)
             
             if self.largura_sidebar < largura_alvo:
-                self.after(10, lambda: self._animar_sidebar(largura_alvo)) # Roda o próximo frame
+                self.after(10, lambda: self._animar_sidebar(largura_alvo)) 
                 
         elif self.largura_sidebar > largura_alvo:
-            # Encolhendo...
+            
             self.largura_sidebar = max(self.largura_sidebar - passo_animacao, largura_alvo)
             self.sidebar_frame.configure(width=self.largura_sidebar)
             
             if self.largura_sidebar > largura_alvo:
-                self.after(10, lambda: self._animar_sidebar(largura_alvo)) # Roda o próximo frame
+                self.after(10, lambda: self._animar_sidebar(largura_alvo))
             else:
-                # Quando chegar a 0, ocultamos de verdade para que o espaço seja totalmente preenchido
+                
                 if largura_alvo == 0:
                     self.sidebar_frame.grid_remove()
 
-    # =========================================================================
-    # 🌈 O MOTOR DE ANIMAÇÃO RGB
-    # =========================================================================
+
     def _iniciar_animacao_rgb(self, hue=0.0):
         try:
             r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.85) 
@@ -262,9 +248,7 @@ class MarkItDownProApp(AppDnD):
         except:
             pass 
 
-    # =========================================================================
-    # MÉTODOS DE FUNCIONAMENTO DO APP
-    # =========================================================================
+
     def _log(self, texto):
         self.terminal.configure(state="normal")
         self.terminal.insert("end", texto + "\n")
